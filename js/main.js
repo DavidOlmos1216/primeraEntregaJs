@@ -30,7 +30,7 @@ agregarArticulo();
 agregarArticulo();
 agregarArticulo();
 
-mostrarArticulo();
+mostrarArticulos();
 
 eliminarArticulo();
 
