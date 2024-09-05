@@ -14,8 +14,10 @@ function eliminarArticulo() {
 	if (indice >= 0 && indice < listaDeArticulos.length) {
 		let articuloEliminado = listaDeArticulos.splice(indice, 1);
 		console.log("Articulo eliminado: " + articuloEliminado);
+		alert("Artículo eliminado: " + articuloEliminado);
 	} else {
 		console.log("Numero inválido. El articulo no se pudo eliminar.");
+		alert("Número inválido. El artículo no se pudo eliminar.");
 	}
 }
 
