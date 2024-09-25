@@ -1,63 +1,95 @@
 
-let listaDeArticulos = [];
+let listaDeArticulos = JSON.parse(localStorage.getItem('articulos')) || [];
+
+function guardarArticulos() {
+    localStorage.setItem('articulos', JSON.stringify(listaDeArticulos));
+}
+
+function actualizarDOM() {
+    const lista = document.getElementById('listaArticulos');
+    lista.innerHTML = ''; // Limpiar lista antes de actualizar
+    listaDeArticulos.forEach((articulo, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. Nombre: ${articulo.nombre}, Precio: $${articulo.precio}, Cantidad: ${articulo.cantidad}`;
+        lista.appendChild(li);
+    });
+}
 
 
 function agregarArticulo() {
-	let nombre = prompt("Ingrese el nombre del artículo:");
-	let precio = parseFloat(prompt("Ingrese el precio del artículo:"));
-	let cantidad = parseInt(prompt("Ingrese la cantidad del artículo:"));
+	let nombre = document.getElementById('nombre').value;
+	let precio = parseFloat(document.getElementById('precio').value);
+	let cantidad = parseInt(document.getElementById('cantidad').value);
 
-	let articulo = {
-		nombre: nombre,
-		precio: precio,
-		cantidad: cantidad
-	};
-	listaDeArticulos.push(articulo);
-	console.log("Ariticulo agregado: " + + articulo.nombre);
-	alert("Artículo agregado: " + articulo.nombre);
+	if (nombre && !isNaN(precio) && !isNaN(cantidad)) {
+        const articulo = { nombre, precio, cantidad };
+        listaDeArticulos.push(articulo);
+        guardarArticulos();
+        actualizarDOM();
+
+        document.getElementById('nombre').value = '';
+        document.getElementById('precio').value = '';
+        document.getElementById('cantidad').value = '';
+    } else {
+        alert("Por favor, ingrese todos los datos correctamente.");
+    }
 }
 
 function eliminarArticulo() {
-	let indice = prompt("Ingrese el número del articulo que desea eliminar:");
-	indice = parseInt(indice) - 1;
+	let indice = parseInt(document.getElementById('indiceEliminar').value) - 1;
 	if (indice >= 0 && indice < listaDeArticulos.length) {
-		let articuloEliminado = listaDeArticulos.splice(indice, 1);
-		console.log("Articulo eliminado: " + articuloEliminado[0].nombre);
-		alert("Artículo eliminado: " + articuloEliminado[0].nombre);
+		listaDeArticulos.splice(indice, 1);
+        guardarArticulos();
+        actualizarDOM();
+        document.getElementById('indiceEliminar').value = '';
 	} else {
-		console.log("Numero inválido. El articulo no se pudo eliminar.");
 		alert("Número inválido. El artículo no se pudo eliminar.");
 	}
 }
 
-function mostrarArticulos() {
-	console.log("Lista de Articulos:");
-	for (let i = 0; i < listaDeArticulos.length; i++) {
-		let articulo = listaDeArticulos[i];
-		console.log(`${i + 1}. Nombre: ${articulo.nombre}, Precio: $${articulo.precio}, Cantidad: ${articulo.cantidad}`);
-	}
-}
+document.getElementById('agregarBtn').addEventListener('click', agregarArticulo);
+document.getElementById('eliminarBtn').addEventListener('click', eliminarArticulo);
+
+// function mostrarArticulos() {
+// 	console.log("Lista de Articulos:");
+// 	for (let i = 0; i < listaDeArticulos.length; i++) {
+// 		let articulo = listaDeArticulos[i];
+// 		console.log(`${i + 1}. Nombre: ${articulo.nombre}, Precio: $${articulo.precio}, Cantidad: ${articulo.cantidad}`);
+// 	}
+// }
 
 function modificarArticulo() {
-	let indice = prompt("Ingrese el número del artículo que desea modificar:");
-	indice = parseInt(indice) - 1;
+	let indice = parseInt(prompt("Ingrese el número del artículo que desea modificar:")) - 1;
 	if (indice >= 0 && indice < listaDeArticulos.length) {
 		let articulo = listaDeArticulos[indice];
 		let nuevoNombre = prompt(`Ingrese el nuevo nombre del artículo (anterior: ${articulo.nombre}):`, articulo.nombre);
 		let nuevoPrecio = parseFloat(prompt(`Ingrese el nuevo precio del artículo (anterior: ${articulo.precio}):`, articulo.precio));
 		let nuevaCantidad = parseInt(prompt(`Ingrese la nueva cantidad del artículo (anterior: ${articulo.cantidad}):`, articulo.cantidad));
 
-		articulo.nombre = nuevoNombre;
-		articulo.precio = nuevoPrecio;
-		articulo.cantidad = nuevaCantidad;
+		if (nuevoNombre && !isNaN(nuevoPrecio) && !isNaN(nuevaCantidad)) {
+            articulo.nombre = nuevoNombre;
+            articulo.precio = nuevoPrecio;
+            articulo.cantidad = nuevaCantidad;
 
-		console.log("Artículo modificado: " + articulo.nombre);
-		alert("Artículo modificado: " + articulo.nombre);
+            guardarArticulos();
+            actualizarDOM();
+        } else {
+            alert("Los valores ingresados no son válidos.");
+        }
 	} else {
-		console.log("Número inválido. El artículo no se pudo modificar.");
-		alert("Número inválido. El artículo no se pudo modificar.");
+        alert("Número inválido. El artículo no se pudo modificar.");
 	}
 }
+
+function limpiarLista() {
+    if (confirm("¿Estás seguro de que deseas eliminar todos los artículos?")) {
+        listaDeArticulos = [];
+        guardarArticulos();
+        actualizarDOM();
+    }
+}
+
+document.getElementById('limpiarListaBtn').addEventListener('click', limpiarLista);
 
 agregarArticulo();
 agregarArticulo();
@@ -72,3 +104,25 @@ mostrarArticulos();
 modificarArticulo();
 
 mostrarArticulos();
+
+
+function guardarDatos() {
+	localStorage.setItem('listaArticulos', JSON.stringify(listaDeArticulos));
+  }
+  
+  function cargarDatos() {
+	const datosGuardados = localStorage.getItem('listaArticulos');
+	if (datosGuardados) {
+	  listaDeArticulos = JSON.parse(datosGuardados);
+	}
+  }
+  
+  function mostrarArticulosEnTabla() {
+  }
+  
+  
+  cargarDatos();
+  mostrarArticulosEnTabla();
+  
+  const btnAgregar = document.getElementById('btnAgregar');
+  btnAgregar.addEventListener('click', agregarArticulo);
